@@ -117,7 +117,12 @@ export function createGuestServer(app, { isDesktop }) {
     await invoke('guest_reply', body, { headers: { rid: String(r.rid), status: String(res.status), ctype: res.bytes ? res.ctype : 'application/json', cache: res.cache ? '1' : '0' } }).catch(() => {});
   }
   // гость не появлялся дольше 2 минут — из списка (страница гостя спрашивает раз в 25 с)
-  setInterval(() => { let n = 0; rt.guests.forEach((g, id) => { if (Date.now() - g.seen > 120000) { rt.guests.delete(id); if (rt.leader === id) rt.leader = 'host'; n++; } }); if (n) changed({ live: true }); }, 30000);
+  setInterval(() => {
+    if (!rt.guests.size) return;
+    let n = 0;
+    rt.guests.forEach((g, id) => { if (Date.now() - g.seen > 120000) { rt.guests.delete(id); if (rt.leader === id) rt.leader = 'host'; n++; } });
+    if (n) changed({ live: true });
+  }, 30000);
   const api = {
     avail,
     get cfg() { return cfg; },
