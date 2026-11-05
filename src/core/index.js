@@ -138,7 +138,8 @@ export function boot(root) {
     onChange: () => pomoSubs.forEach((fn) => fn()),
   });
   pomodoro.subscribe = (fn) => { pomoSubs.add(fn); return () => pomoSubs.delete(fn); };
-  setInterval(() => pomodoro.tick(), 500);
+  // Тикаем только когда помодоро действительно работает
+  setInterval(() => { if (pomodoro.active()) pomodoro.tick(); }, 500);
 
   // Секундомер «сколько я играю» — в ядре: идёт и при закрытом окне, переживает перезагрузку
   device.watch ??= {};
