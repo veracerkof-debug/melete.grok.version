@@ -21,7 +21,16 @@ export function initWebMemory(app) {
     if (!navigator.storage || !navigator.storage.persist) return;
     navigator.storage.persisted().then((p) => (p ? true : navigator.storage.persist())).then((p) => { mem.persisted = !!p; }).catch(() => {});
   };
-  if (app.store.state.settings.configured) ask();
-  else { const iv = setInterval(() => { if (app.store.state.settings.configured) { clearInterval(iv); ask(); } }, 5000); }
+  if (app.store.state.settings.configured) {
+    ask();
+  } else if (app.store.subscribe) {
+    // Подписка вместо опроса каждые 5 секунд
+    const unsub = app.store.subscribe(() => {
+      if (app.store.state.settings.configured) {
+        unsub();
+        ask();
+      }
+    });
+  }
   return mem;
 }
