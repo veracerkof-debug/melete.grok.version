@@ -82,10 +82,13 @@ jobs:
         working-directory: android
         env:
           VERSION_CODE: ${{ github.run_number }}
-          BETA_KEYSTORE: ${{ runner.temp }}/melete-beta.jks
           BETA_STORE_PASSWORD: ${{ secrets.BETA_STORE_PASSWORD }}
         run: |
           chmod +x gradlew
+          # Передаём ключ только если файл реально существует
+          if [ -f "$RUNNER_TEMP/melete-beta.jks" ]; then
+            export BETA_KEYSTORE="$RUNNER_TEMP/melete-beta.jks"
+          fi
           ./gradlew assembleDebug --no-daemon --stacktrace
           if [ "$MELETE_CHANNEL" = pre ]; then
             cp app/build/outputs/apk/debug/app-debug.apk ../Melete-PreRelease.apk
