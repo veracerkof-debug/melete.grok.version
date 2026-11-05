@@ -372,7 +372,12 @@ export function boot(root) {
   dProvide('open', () => [...(app.openNow || [])].join(','));
   dProvide('screen', () => document.visibilityState + ' ' + innerWidth + '×' + innerHeight);
   requestAnimationFrame(() => dTime('app.start', performance.now()));
-  setInterval(() => { if (document.visibilityState === 'visible' && audio.state()) void audio.load; }, 10000);
+  // Пробуем разбудить AudioContext, только если страница видима и контекст ещё не running
+  setInterval(() => {
+    if (document.visibilityState !== 'visible') return;
+    const st = audio.state();
+    if (st && st.st !== 'running') void audio.load;
+  }, 10000);
   return app;
 }
 
