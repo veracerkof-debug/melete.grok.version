@@ -44,13 +44,18 @@ export function initNoSound(app) {
       (r.k === 'mixer' && app.openMixer ? '<button type="button" class="link" data-nosnd="mix">' + t('nosnd.open') + '</button>' : '') +
       '<button type="button" class="nsx" data-nosnd="x" aria-label="' + esc(t('ui.close')) + '">×</button>';
   };
-  let busy = false;
+  let busy = false, lastDev = 0;
   const check = async () => {
     if (busy) return;
     const playing = BUSES.filter((b) => mixer.isActive(b));
     if (!playing.length || document.visibilityState !== 'visible' || app.store.state.settings.noSoundNote === false || app.store.state.settings.toolsOnly) { show(null); return; }
     let dev = null;
-    if (Volume) { busy = true; try { dev = await Volume.get(); } catch { /* нет данных — проверяем только микшер */ } busy = false; }
+    // Громкость устройства спрашиваем не чаще раза в 4 секунды
+    if (Volume && Date.now() - lastDev > 4000) {
+      busy = true;
+      try { dev = await Volume.get(); lastDev = Date.now(); } catch { /* нет данных — проверяем только микшер */ }
+      busy = false;
+    }
     show(silenceReason(playing, mixer.value, dev));
   };
   setInterval(check, 1500);
