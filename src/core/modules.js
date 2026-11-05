@@ -309,7 +309,8 @@ export function trackToolTime(app, toolId) {
   addEventListener('pointerdown', onVis, { passive: true });
   act?.toolOpen(true);
   saveToolView(tv);
-  const hb = setInterval(onVis, 5000);
+  // Проверяем реже, если время сейчас не идёт
+  const hb = setInterval(() => { if (counting() || tv.seg) onVis(); }, 5000);
   return {
     // Возвращает секунды, если записано в статистику, иначе 0
     stop() {
