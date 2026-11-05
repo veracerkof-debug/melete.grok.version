@@ -67,12 +67,16 @@ jobs:
           npx cap sync android
 
       # Ключ подписи — из секретов репозитория (в коде его нет): Settings → Secrets and variables → Actions
+      # В рабочей версии (melete.grok.version) секрет необязателен — собираем debug APK без подписи
       - name: Ключ подписи
         env:
           KEY_B64: ${{ secrets.BETA_KEYSTORE_B64 }}
         run: |
-          if [ -z "$KEY_B64" ]; then echo "::error::Нет секрета BETA_KEYSTORE_B64 — APK не подписать (см. DECISIONS.md, 2026-10)"; exit 1; fi
-          echo "$KEY_B64" | base64 -d > "$RUNNER_TEMP/melete-beta.jks"
+          if [ -n "$KEY_B64" ]; then
+            echo "$KEY_B64" | base64 -d > "$RUNNER_TEMP/melete-beta.jks"
+          else
+            echo "Секрет BETA_KEYSTORE_B64 не задан — собираем debug APK без подписи"
+          fi
 
       - name: Сборка APK
         working-directory: android
