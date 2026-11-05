@@ -67,28 +67,31 @@ jobs:
           npx cap sync android
 
       # Ключ подписи — из секретов репозитория (в коде его нет): Settings → Secrets and variables → Actions
-      # В рабочей версии (melete.grok.version) секрет необязателен — собираем debug APK без подписи
+      # Если секрета нет — генерируем временный debug-ключ, чтобы APK нормально устанавливался
       - name: Ключ подписи
         env:
           KEY_B64: ${{ secrets.BETA_KEYSTORE_B64 }}
         run: |
           if [ -n "$KEY_B64" ]; then
             echo "$KEY_B64" | base64 -d > "$RUNNER_TEMP/melete-beta.jks"
+            echo "Используем секрет BETA_KEYSTORE_B64"
           else
-            echo "Секрет BETA_KEYSTORE_B64 не задан — собираем debug APK без подписи"
+            echo "Секрет не задан — генерируем временный debug-ключ"
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/melete-beta.jks" \
+              -alias melete -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass android -keypass android \
+              -dname "CN=Melete Debug, OU=Dev, O=Melete, L=Local, S=Local, C=US"
           fi
 
       - name: Сборка APK
         working-directory: android
         env:
           VERSION_CODE: ${{ github.run_number }}
-          BETA_STORE_PASSWORD: ${{ secrets.BETA_STORE_PASSWORD }}
+          BETA_STORE_PASSWORD: ${{ secrets.BETA_STORE_PASSWORD || 'android' }}
+          BETA_KEY_ALIAS: melete
         run: |
           chmod +x gradlew
-          # Передаём ключ только если файл реально существует
-          if [ -f "$RUNNER_TEMP/melete-beta.jks" ]; then
-            export BETA_KEYSTORE="$RUNNER_TEMP/melete-beta.jks"
-          fi
+          export BETA_KEYSTORE="$RUNNER_TEMP/melete-beta.jks"
           ./gradlew assembleDebug --no-daemon --stacktrace
           if [ "$MELETE_CHANNEL" = pre ]; then
             cp app/build/outputs/apk/debug/app-debug.apk ../Melete-PreRelease.apk
