@@ -113,7 +113,11 @@ export function createSequencer({ mixer, synth, getProject, getFile = () => null
     const p = getProject();
     if (!p || !playing) return;
     // свёрнуто → развёрнуто: планировать сразу (таймер мог проспать)
-    if (!sched.vis && !context) { sched.vis = true; document.addEventListener('visibilitychange', () => { if (playing && document.visibilityState === 'visible') sched(); }); }
+    if (!sched.vis && !context) {
+      sched.vis = true;
+      sched.onVis = () => { if (playing && document.visibilityState === 'visible') sched(); };
+      document.addEventListener('visibilitychange', sched.onVis);
+    }
     const spb = secPerBeat(p), { notes, loop } = plan(p), until = c.currentTime + (context ? AHEAD : ahead());
     while (t0 + nextBeat * spb < until) {
       if (mode.once && nextBeat >= loop.b) { // один проход: конец петли — хвост и стоп
@@ -346,7 +350,13 @@ export function createSequencer({ mixer, synth, getProject, getFile = () => null
       const grand = songNotes(p, null).filter((n) => !n.drum && n.tr.inst !== 'sample' && !(n.tr.inst === 'gm' && gmReady()) && patchOf(n.tr).kind === 'grand').map((n) => ({ m: n.m, vel: n.v }));
       if (grand.length) await grandPrepare(c, grand);
     },
-    dispose() { api.stop(); chains.forEach((x) => x.chain.dispose()); chains.clear(); chainsFor = null; },
+    dispose() {
+      api.stop();
+      chains.forEach((x) => x.chain.dispose()); chains.clear(); chainsFor = null;
+      // Слушатель видимости снимается: иначе он живёт и после закрытия студии (правило: слушатель без снятия — дефект)
+      try { if (sched.onVis) document.removeEventListener('visibilitychange', sched.onVis); } catch { /* ignore */ }
+      sched.onVis = null; sched.vis = false;
+    },
   };
   return api;
 }

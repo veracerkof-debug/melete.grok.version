@@ -36,6 +36,7 @@ export function createAutoStems(app) {
   const { files, jobs } = app;
   const desk = app.isDesk ?? isDesktop();
   let timer = 0, running = false, failed = new Map(); // id → когда можно пробовать снова
+  let started = false, poll = 0, offs = [];
   const settings = () => app.store.state.settings;
   let lastInput = Date.now();
   const idle = () => Date.now() - lastInput >= IDLE_MS;
@@ -53,6 +54,8 @@ export function createAutoStems(app) {
   const needsAna = (r) => autoAna(settings()) && !r.anaTried && (!r.ana || (!(r.ana.v >= ANA_V) && mirOk)) && !pcWaits(r, 'ana');
   let mirOk = false; import('../audio/mir.js').then((m) => { mirOk = m.mirSupported(); schedule(); }).catch(() => {});
   const ok = (r) => !(failed.get(r.id) > Date.now());
+  // Отметка «не посчиталось»: срок истёк — запись убирается, карта не растёт (мелочь, но память на телефоне)
+  const fail = (r, ms) => { const t = Date.now(); failed.set(r.id, t + ms); for (const [k, v] of failed) if (v < t) failed.delete(k); };
   // режим записи: свой, а запись с телефона — как просил телефон (rec.want); своё выключено — не считаем
   const modeOf = (r) => { const m = autoMode(settings(), desk); return m !== 'off' && r.want && ['2', '4', '6'].includes(r.want.stems) ? r.want.stems : m; };
   const hqOf = (r) => autoHq(settings()) || !!(r.want && r.want.hq && autoMode(settings(), desk) !== 'off');
@@ -101,11 +104,11 @@ export function createAutoStems(app) {
       if (needsAna(r)) await analyze(r);
       else if (needsLyr(r)) {
         log('auto', 'текст в фоне: ' + r.id);
-        try { await jobs.lyrics(r, { auto: true }); } catch (e) { if (e && e.message === 'cancel') failed.set(r.id, Date.now() + RETRY_MS); else { r.lyrTried = true; await files.save(r); } }
+        try { await jobs.lyrics(r, { auto: true }); } catch (e) { if (e && e.message === 'cancel') fail(r, RETRY_MS); else { r.lyrTried = true; await files.save(r); } }
       } else {
         const m = modeOf(r), hq = !needsStems(r);
         log('auto', 'дорожки в фоне: ' + r.id + ' (' + m + (hq ? ', hq' : '') + ')');
-        try { await jobs.separate(r, m, { auto: true, hq }); } catch (e) { if (e && e.message === 'cancel') failed.set(r.id, Date.now() + RETRY_MS); else failed.set(r.id, Date.now() + 6 * 3600000); }
+        try { await jobs.separate(r, m, { auto: true, hq }); } catch (e) { if (e && e.message === 'cancel') fail(r, RETRY_MS); else fail(r, 6 * 3600000); }
       }
     } finally { running = false; }
     schedule(2000);
@@ -115,9 +118,24 @@ export function createAutoStems(app) {
   const onSound = () => { const c = jobs.current; if (c && c.auto) jobs.cancel(); if (ana) ana.cancel(); };
   const api = {
     start() {
-      files.subscribe(() => schedule()); schedule(DELAY_MS); setInterval(() => { if (!quiet()) onSound(); else schedule(); }, 5000);
+      if (started) return; // повторный запуск не должен удваивать ни таймер, ни слушатели
+      started = true;
+      files.subscribe(() => schedule()); schedule(DELAY_MS);
+      poll = setInterval(() => { if (!quiet()) onSound(); else schedule(); }, 5000);
       // касание, мышь, клавиша — сразу прервать фоновый счёт (не ждать проверки раз в 5 с) и отложить следующий
-      if (typeof window !== 'undefined') ['pointerdown', 'keydown', 'wheel'].forEach((k) => window.addEventListener(k, () => { lastInput = Date.now(); onSound(); }, { capture: true, passive: true }));
+      if (typeof window !== 'undefined') {
+        const onIn = () => { lastInput = Date.now(); onSound(); };
+        ['pointerdown', 'keydown', 'wheel'].forEach((k) => window.addEventListener(k, onIn, { capture: true, passive: true }));
+        offs.push(() => ['pointerdown', 'keydown', 'wheel'].forEach((k) => window.removeEventListener(k, onIn, { capture: true })));
+      }
+    },
+    // Фоновый счёт останавливается: таймер и слушатели снимаются (правило: таймер без остановки — дефект)
+    stop() {
+      if (!started) return;
+      started = false;
+      clearInterval(poll); poll = 0;
+      offs.splice(0).forEach((f) => f());
+      clearTimeout(timer); timer = 0;
     },
     kick: () => schedule(1000),
     waitsPc: (r) => pcWaits(r, 'stems') && !hasStems(files, r.id), // плеер: «посчитает компьютер»

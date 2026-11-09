@@ -452,7 +452,7 @@ const DAY = 86400000, MIN = 60000;
 export function createSyncClient(app, { H = http, now = () => Date.now() } = {}) {
   const S = () => app.store.state.settings, subs = new Set();
   const emit = () => subs.forEach((fn) => { try { fn(); } catch (e) { (globalThis.reportError || console.error)(e); } });
-  let busy = false, lastTry = 0, fails = 0, last = null, timer = 0;
+  let busy = false, lastTry = 0, fails = 0, last = null, timer = 0, first = 0;
   const pcWork = () => S().pcWork !== false, syncAuto = () => S().syncAuto !== false;
   const quiet = () => !app.auto || !app.auto.quiet || app.auto.quiet();
   // компьютер «рядом»: синхронизировались за последние трое суток
@@ -495,8 +495,8 @@ export function createSyncClient(app, { H = http, now = () => Date.now() } = {})
     get busy() { return busy; },
     get last() { return last; },
     waiting,
-    start() { if (!timer) timer = setInterval(tick, MIN); setTimeout(tick, 20000); },
-    stop() { clearInterval(timer); timer = 0; },
+    start() { if (!timer) timer = setInterval(tick, MIN); if (!first) first = setTimeout(tick, 20000); },
+    stop() { clearInterval(timer); timer = 0; clearTimeout(first); first = 0; },
     subscribe(fn) { subs.add(fn); return () => subs.delete(fn); },
   };
 }
