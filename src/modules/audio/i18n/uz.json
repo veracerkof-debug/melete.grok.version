@@ -257,6 +257,7 @@
   "stems.packHintFull": "4 va 6 yoʻlak uchun model kerak — «Toʻliq ajratish» paketi, bir marta yuklanadi.",
   "shareAs": "… sifatida ulashish",
   "convertTo": "Konvertatsiya…",
+  "convert.fail": "Konverterni ochib boʻlmadi",
   "shareAsHint": "Bu formatdagi fayl mediatekada ham paydo boʻladi",
   "selSend": "Yuborish",
   "selConv": "Konvertatsiya",

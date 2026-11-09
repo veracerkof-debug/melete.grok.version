@@ -1289,7 +1289,7 @@ function convSheet(ids, { fmt = null, share = false } = {}) {
   let h = null;
   ctx.ui.sheet(() => ctx.ui.snav(ctx.t('convertTo')) + '<div class="mlconv"></div>', (el) => {
     h = ctx.mountTool('convert', el.querySelector('.mlconv'), 'full', { inbox: { ids, ...(fmt ? { fmt } : {}), ...(share ? { share: true } : {}) } });
-    if (!h) ctx.ui.toast(ctx.t('err.fail'));
+    if (!h) ctx.ui.toast(ctx.t('convert.fail'));
   }, { tall: true, onClose: () => { if (h) { try { h.unmount(); } catch (e) { ctx.logErr(e); } } render(); } });
 }
 // Отправить несколько файлов как есть (по одному через «Поделиться»); сбой — сказать, а не молчать

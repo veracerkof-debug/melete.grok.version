@@ -106,6 +106,7 @@
   "hold.edit": "Whole panel",
   "hold.help": "Instructions",
   "streak.title": "Streak",
+  "rank.title": "League",
   "streak.weeks": [
     "{n} week",
     "{n} weeks"
@@ -1251,6 +1252,7 @@
   "ymt.part.drums": "Drums",
   "ymt.part.other": "Other",
   "stems.notesSuffix": "notes",
+  "stems.cleanSuffix": "clean",
   "auto.title": "Media library",
   "auto.stems": "Stems automatically",
   "auto.off": "Off",
@@ -1993,6 +1995,7 @@
   "snd.hint": "“Safe” latency — no dropouts on stage; “Low” — fast key response, may crackle on a weak phone. “Lite” quality is for weak devices: fewer voices, simpler pads, one reverb.",
   "snd.later": "The buffer applies after a restart",
   "heavy.web": "This module is not in the web version: it is heavy ({mb} MB of models and data). It is in the app for Android and Windows.",
+  "heavy.desc": "Heavy module: it works with models on the device, so it needs a phone or computer with spare memory.",
   "heavy.get": "Get the app",
   "heavy.short": "in the app for Android and Windows",
   "snd.engine": "Air sound engine",

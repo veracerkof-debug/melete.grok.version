@@ -105,6 +105,7 @@
   "hold.edit": "Butun panel",
   "hold.help": "Yoʻriqnoma",
   "streak.title": "Zarbdor rejim",
+  "rank.title": "Liga",
   "streak.weeks": [
     "{n} hafta"
   ],
@@ -1227,6 +1228,7 @@
   "ymt.part.drums": "Zarbli",
   "ymt.part.other": "Boshqa",
   "stems.notesSuffix": "notalar",
+  "stems.cleanSuffix": "tozalangan",
   "auto.title": "Mediateka",
   "auto.stems": "Yoʻlaklar avtomatik",
   "auto.off": "Oʻchiq",
@@ -1958,6 +1960,7 @@
   "snd.hint": "«Ishonchli» kechikish — sahnada uzilishsiz; «Past» — klavishlar tez javob beradi, kuchsiz telefonda shitirlashi mumkin. «Yengil» sifat — kuchsiz qurilmalar uchun: kamroq ovoz, soddaroq pedlar, bitta reverberatsiya.",
   "snd.later": "Bufer qayta ishga tushirilgandan keyin qoʻllanadi",
   "heavy.web": "Bu modul veb-versiyada yoʻq: u ogʻir ({mb} MB model va maʼlumot). U Android va Windows ilovasida bor.",
+  "heavy.desc": "Ogʻir modul: u qurilmada modelllar bilan ishlaydi, shuning uchun zaxira xotirali telefon yoki kompyuter kerak.",
   "heavy.get": "Ilovani yuklab olish",
   "heavy.short": "Android va Windows ilovasida",
   "snd.engine": "Havo tovushlari dvigateli",

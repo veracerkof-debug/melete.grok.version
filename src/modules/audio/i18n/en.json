@@ -258,6 +258,7 @@
   "stems.packHintFull": "4 and 6 stems need a model — the “Full separation” pack, downloaded once.",
   "shareAs": "Share as…",
   "convertTo": "Convert…",
+  "convert.fail": "Could not open the converter",
   "shareAsHint": "The file in this format is also added to the library",
   "selSend": "Send",
   "selConv": "Convert",
