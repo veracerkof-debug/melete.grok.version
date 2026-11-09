@@ -5,6 +5,7 @@ import { holdAt } from '../../audio/param.js';
 import { synWave } from '../../audio/waves.js';
 import { reverbNode, sendToHall } from '../../audio/context.js';
 import { airVoice } from '../../audio/airsound.js';
+import { after } from '../../audio/clock.js';
 
 // На голос: яркость (фильтр с резонансом), вибрато, тремоло, громкость, перегруз, фузз. На шину: эхо, реверберация
 export const FX = ['bright', 'vib', 'trem', 'vol', 'drive', 'fuzz', 'echo', 'verb'];
@@ -100,7 +101,9 @@ export function createGlideVoice(c, dest, patch, { hold = true, a4 = 440, hallVi
   // воздушный звук (airsound.js) собирается в start(): там уже известна нота
   const os = [], dets = s.air ? [] : s.cho > 0.04 ? [-(4 + s.cho * 10), 4 + s.cho * 10] : [0];
   let air = null;
-  if (s.hall) sendToHall(out, s.hall, hallVia);
+  // Посыл в зал держит цепочку живой: без разрыва связи весь голос остаётся подключённым к звуковому потоку
+  // и живёт до конца сессии (третий принцип: ошибка стоит денег) — голос отпускается целиком, см. release()
+  const hallSend = s.hall ? sendToHall(out, s.hall, hallVia) : null;
   dets.forEach((d) => {
     const o = c.createOscillator(), g = c.createGain();
     o.setPeriodicWave(synWave(c, kind, s.tone));
@@ -167,7 +170,13 @@ export function createGlideVoice(c, dest, patch, { hold = true, a4 = 440, hallVi
       amp.gain.setTargetAtTime(0.0001, t, r / 4);
       const end = t + r * 1.4 + 0.05;
       [...os, ...(air ? air.srcs : []), vibLfo, trLfo].forEach((o) => { try { o.stop(end); } catch { /* ignore */ } });
-      setTimeout(() => { try { fz.output.disconnect(); } catch { /* ignore */ } }, (end - t + 0.2) * 1000);
+      // Отпустить голос целиком: разорвать обе дороги к звуковому потоку — к шине (fz.output) и к залу (посыл
+      // от out). Иначе цепочка остаётся подключённой к потоку и живёт до конца сессии: за вечер игры
+      // накапливаются сотни мёртвых голосов — и звук, и телефон сдают.
+      after((end - t + 0.2) * 1000, () => {
+        [lp, amp, vol, out, vibG, trG, vibLfo, trLfo, od.input, od.output, fz.input, fz.output, hallSend, air && air.out]
+          .forEach((n) => { try { n && n.disconnect(); } catch { /* ignore */ } });
+      });
     },
     get dead() { return dead; },
   };
