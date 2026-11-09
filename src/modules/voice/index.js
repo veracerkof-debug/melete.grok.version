@@ -139,10 +139,12 @@ async function liveStart() {
   const s = st(), dev = curIn(), E = engine();
   if (dev && dev.type === 'display') return; // звук экрана — окно выбора только при записи
   L = { pending: true };
+  let c = null, inp = null;
   try {
-    const C = window.AudioContext || window.webkitAudioContext, c = new C({ latencyHint: 'interactive' });
+    const C = window.AudioContext || window.webkitAudioContext;
+    c = new C({ latencyHint: 'interactive' });
     if (E.native) await E.route(dev ? dev.id : -1);
-    const inp = await openInput(c, !E.native && dev ? dev.id : null);
+    inp = await openInput(c, !E.native && dev ? dev.id : null);
     const fx = await createLiveFx(c, { chain: s.chain, gain: s.fx.gain, voice: s.voice });
     if (!L || !L.pending) { fx.disconnect(); inp.stop(); c.close(); if (E.native) E.unroute(); return; } // успели закрыть
     const an = c.createAnalyser(), mon = c.createGain();
@@ -158,7 +160,15 @@ async function liveStart() {
     S.err = null;
     const loop = () => { if (!L || !L.an) return; L.raf = requestAnimationFrame(loop); meterUpdate(levelOf(L.an, L.buf)); grUpdate(L.fx.gr()); };
     loop();
-  } catch (e) { L = null; S.err = e && (e.reason === 'denied' || e.reason === 'nomic') ? e.reason : 'unavailable'; if (E.native) E.unroute(); }
+  } catch (e) {
+    L = null;
+    // Контекст и вход освобождаем: «микрофон не дали» — частый случай, а контекстов у браузера мало
+    // (шесть — и звук в приложении перестаёт работать совсем)
+    try { inp && inp.stop(); } catch { /* ignore */ }
+    try { c && c.close(); } catch { /* ignore */ }
+    S.err = e && (e.reason === 'denied' || e.reason === 'nomic') ? e.reason : 'unavailable';
+    if (E.native) E.unroute();
+  }
   render();
 }
 async function liveStop() {

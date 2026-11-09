@@ -102,16 +102,25 @@ export function createRecorder(app) {
       if (g.howl && p.mon) { p.mon = false; apply(); if (meter.howl) meter.howl(); }
       gateGain.gain.setTargetAtTime(p.mon && g.open ? 1 : 0, c.currentTime, g.open ? 0.004 : 0.06);
     }, 20);
-    ch.mic = { stream, src, micGain, an, monGain, gateGain, timer };
+    const mic = { stream, src, micGain, an, monGain, gateGain, timer };
+    // Пока шёл запрос разрешения, лист записи могли закрыть (disarm → teardown) — цепочка уже не та.
+    // Микрофон отпускаем сразу: иначе он остаётся писать комнату, а таймер живёт до перезапуска приложения.
+    if (chain !== ch) { stopMic(mic); if (E.native) E.unroute(); return 'mic'; }
+    ch.mic = mic;
     apply();
     return 'ok';
+  }
+  // Отпустить микрофон: поток, таймер и узлы
+  function stopMic(m) {
+    if (!m) return;
+    clearInterval(m.timer);
+    try { m.stream.getTracks().forEach((t) => t.stop()); } catch { /* ignore */ }
+    [m.src, m.micGain, m.monGain, m.gateGain].forEach((n) => { try { n.disconnect(); } catch { /* ignore */ } });
   }
   function closeMic() {
     const m = chain && chain.mic;
     if (!m) return;
-    clearInterval(m.timer);
-    m.stream.getTracks().forEach((t) => t.stop());
-    [m.src, m.micGain, m.monGain, m.gateGain].forEach((n) => { try { n.disconnect(); } catch { /* ignore */ } });
+    stopMic(m);
     chain.mic = null;
     meter.db = -120; meter.open = false;
     const E = engine();
