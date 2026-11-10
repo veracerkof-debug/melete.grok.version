@@ -198,10 +198,10 @@ function mkbHTML(ctx) {
   for (let m = m0; wi < 10; m++) {
     const pc = m % 12, nm = SH[pc] + (Math.floor(m / 12) - 1);
     if (WHITE.includes(pc)) {
-      w += '<div class="mw' + (MK.held.has(m) ? ' on' : '') + '" data-mk="' + m + '" role="button" aria-label="' + nm + '">' +
+      w += '<div class="mw' + (MK.held.has(m) ? ' on' : '') + '" data-mk="' + m + '" role="button" tabindex="0" aria-label="' + nm + '">' +
         (pc === 0 ? '<span>C' + (Math.floor(m / 12) - 1) + '</span>' : pc === 9 ? '<span>A</span>' : '') + '</div>';
       wi++;
-    } else b += '<div class="mb' + (MK.held.has(m) ? ' on' : '') + '" data-mk="' + m + '" role="button" aria-label="' + nm + '" style="left:' + wi * 10 + '%"></div>';
+    } else b += '<div class="mb' + (MK.held.has(m) ? ' on' : '') + '" data-mk="' + m + '" role="button" tabindex="0" aria-label="' + nm + '" style="left:' + wi * 10 + '%"></div>';
   }
   return '<div class="mkbar"><button class="mko" data-mko="-1" aria-label="' + t('octDown') + '">‹</button><div class="mkb">' + w + b +
     '</div><button class="mko" data-mko="1" aria-label="' + t('octUp') + '">›</button><button class="mkl' + (MK.latch ? ' on' : '') +

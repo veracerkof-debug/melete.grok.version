@@ -36,8 +36,8 @@ function renderToolsNow(app, root) {
   const st = app.store.state.settings, T = toolsTab(st), list = T.shown.map((id) => (isPage(id) ? pageCard(id) : moduleById(id))); // Библия — своя вкладка
   // режим правки (arrange.js): у карточки — «+», вниз вкладкой
   const arr = document.documentElement.classList.contains('arrange') && st.uiStyle !== 'mono';
-  const badge = (id) => (arr ? '<i class="arrb in" data-arr="in:' + id + '" role="button" aria-label="' + esc(t('hold.makeTab')) + '">+</i>' +
-    (isPage(id) ? '' : '<i class="arrb off" data-arr="off:' + id + '" role="button" aria-label="' + esc(t('tools.offBtn')) + '">−</i>') : '');
+  const badge = (id) => (arr ? '<i class="arrb in" data-arr="in:' + id + '" role="button" tabindex="0" aria-label="' + esc(t('hold.makeTab')) + '">+</i>' +
+    (isPage(id) ? '' : '<i class="arrb off" data-arr="off:' + id + '" role="button" tabindex="0" aria-label="' + esc(t('tools.offBtn')) + '">−</i>') : '');
   root.innerHTML = '<h1 class="vh">' + t('tools.title') + '</h1><div class="tgrid tgtop">' + list.map((m) => {
     if (m.page) return '<button class="tcard2 tpage" data-open-tool="' + m.id + '" style="--c:var(--tint);--on:var(--on-tint)">' + badge(m.id) + '<span class="tci2">' + m.icon + '</span><span class="tcb"><span class="tcn2">' + esc(m.name) + '</span><span class="tcs2"></span></span></button>';
     let s2 = '';

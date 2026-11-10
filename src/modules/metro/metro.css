@@ -93,7 +93,7 @@
 .wseg.l3.lit{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--tint) 70%,transparent))}
 .wacc{fill:var(--ink);opacity:.55}
 .bpmin{display:flex;align-items:baseline;justify-content:center;gap:8px;margin:10px 0 16px}
-.bpmin input{width:4ch;font-size:64px;font-weight:300;text-align:center;border:0;background:none;color:var(--ink);outline:none;border-bottom:2px solid var(--tint)}
+.bpmin input{width:4ch;font-size:64px;font-weight:300;text-align:center;border:0;background:none;color:var(--ink);border-bottom:2px solid var(--tint)}
 .bpmin span{font-size:18px;color:var(--l2)}
 .wband{fill:none;stroke:var(--fill);stroke-width:24}
 .wticks line{stroke:color-mix(in srgb,var(--l3) 80%,transparent);stroke-width:1}

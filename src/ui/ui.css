@@ -19,14 +19,14 @@ button.cell:active{background:var(--fill)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:14px;background:var(--fill);color:var(--tint-text);font-weight:600;font-size:17px}
 .btn.fill{background:var(--tint);color:var(--on-tint)}
 .btn.block{width:100%}
-.btn.sm{min-height:34px;padding:0 14px;border-radius:999px;font-size:15px}
+.btn.sm{min-height:40px;padding:0 14px;border-radius:999px;font-size:15px}
 .link{color:var(--tint-text);font-size:17px;min-height:44px;display:inline-flex;align-items:center}
 .link.b{font-weight:600}
 .round{width:44px;height:44px;border-radius:50%;background:var(--fill);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;flex:none;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .round svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
 .seg{display:flex;background:var(--fill);border-radius:9px;padding:2px;gap:2px;width:100%}
 .cell>.seg{width:auto;flex:1 1 55%;min-width:0} /* рядом с подписью — делит строку, не ложится поверх */
-.seg button{flex:1;min-width:0;min-height:32px;border-radius:7px;font-size:14px;font-weight:500;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} /* min-width:0 — длинная подпись не раздвигает ряд шире экрана */
+.seg button{flex:1;min-width:0;min-height:40px;border-radius:7px;font-size:14px;font-weight:500;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} /* min-width:0 — длинная подпись не раздвигает ряд шире экрана */
 .seg button[aria-pressed="true"]{background:var(--cell);box-shadow:0 3px 8px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04)}
 .sw{position:relative;width:51px;height:31px;flex:none}
 .sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
@@ -54,10 +54,10 @@ button.cell:active{background:var(--fill)}
   .scrim{align-items:center}
   .sheet{border-radius:14px;max-height:88%}
 }
-.inp{flex:1;min-width:0;border:0;background:none;outline:none;text-align:right;font-size:17px;color:var(--ink)}
+.inp{flex:1;min-width:0;border:0;background:none;text-align:right;font-size:17px;color:var(--ink)}
 .inp.left{text-align:left}
 .inp::placeholder{color:var(--l3)}
-.ta{width:100%;border:0;background:none;outline:none;resize:vertical;min-height:130px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:14px;line-height:1.55;padding:12px 16px;display:block}
+.ta{width:100%;border:0;background:none;resize:vertical;min-height:130px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:14px;line-height:1.55;padding:12px 16px;display:block}
 .cellcol{display:block;padding:12px 16px}
 .cellcol .cap{font-size:13px;color:var(--l2);margin-top:8px}
 .range{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:var(--fill2);margin:22px 0 8px;outline:none}
@@ -81,12 +81,12 @@ button.cell:active{background:var(--fill)}
 .ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .ic svg.f{fill:currentColor;stroke:none}
 .ic.txt{width:auto;min-width:44px;padding:0 12px;border-radius:999px}
-.ic.sm{height:36px;min-width:36px;width:36px;font-size:14px}
+.ic.sm{height:40px;min-width:40px;width:40px;font-size:14px}
 .ic.sm.txt{width:auto;padding:0 12px}
 .ic.sm svg{width:18px;height:18px}
 .ic.act{background:var(--tint);color:var(--on-tint)}
 .ic.plain{background:none;color:var(--tint-text)}
-.ic.corner{position:absolute;top:12px;right:12px;width:36px;height:36px}
+.ic.corner{position:absolute;top:12px;right:12px;width:40px;height:40px}
 .ic.corner svg{width:18px;height:18px}
 .prow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .hdr{margin:16px 12px 6px}

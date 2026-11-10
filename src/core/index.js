@@ -164,6 +164,15 @@ export function boot(root) {
     else if (counts && active.awaySince) { audio.metro.flush(); awayEnd(active); saveActive(active); }
   };
   document.addEventListener('visibilitychange', () => awayCheck());
+  // Клавиатура: элементы с role="button" tabindex="0" (значки, плитки, крестики) — без этого они недостижимы с клавиатуры:
+  // ни Tab, ни Enter. Enter и пробел нажимают их, как настоящая кнопка.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    const el = e.target && e.target.closest ? e.target.closest('[role="button" tabindex="0"]') : null;
+    if (!el || el.tagName === 'BUTTON' || el.tagName === 'A') return;
+    e.preventDefault();
+    try { el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })); } catch { /* ignore */ }
+  });
   // Всё, что меняли в инструментах (пресеты, звуки, ручки), — на диск при уходе в фон и закрытии, даже если модуль
   // правил настройки напрямую и сам не сохранил (решение автора 28.10.2026: вернулся через неделю — всё как было)
   const persistAll = () => { try { audio.metro.flush(); } catch { /* */ } saveDevice(device, undefined, { soft: true }); };
@@ -173,7 +182,11 @@ export function boot(root) {
   // после перезагрузки: «вдали», начатое при закрытии страницы, заканчивается сразу
   setTimeout(awayCheck, 0);
 
-  const files = createFiles({ onWriteFail: writeFail('файлы') });
+  const files = createFiles({
+    onWriteFail: writeFail('файлы'),
+    // Сбой базы без нехватки места — не «нет места», а другая беда: она тоже попадает в журнал
+    onError: (e, rec) => { try { log('files', 'файл не сохранён: ' + (e && (e.name || e.message)) + (rec && rec.id ? ' (' + rec.id + ')' : ''), 'e'); } catch { /* */ } },
+  });
 
   // Перед первой загрузкой файла — предупреждение о правах (прототип: uploadGuard)
   async function confirmUpload() {

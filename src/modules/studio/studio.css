@@ -11,7 +11,7 @@
 .sttop{display:flex;align-items:center;justify-content:space-between;gap:4px;flex:none;padding:2px 0}
 .stgrp{display:flex;align-items:center;gap:2px}
 .stgrp.mid{gap:4px}
-.stwrap .sttop .ic.sm{width:36px;height:36px;min-width:36px;padding:0;flex:none}
+.stwrap .sttop .ic.sm{width:40px;height:36px;min-width:36px;padding:0;flex:none}
 .sttop .ic svg{width:20px;height:20px}
 .sttop .ic.plain{background:none;color:var(--l2)}
 .sttop .ic.plain.on{color:var(--tint)}

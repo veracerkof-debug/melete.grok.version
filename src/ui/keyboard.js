@@ -18,9 +18,9 @@ export function kbHTML(m0, nw, hl, root, keys = null) {
   while (wi < nw) {
     const pc = m % 12, h = hl && hl.has(pc) ? ' hl' + (root === pc ? ' root' : '') : '', nm = mName(m);
     if (WHITE.includes(pc)) {
-      ws += '<div class="w' + h + '" data-m="' + m + '" role="button" aria-label="' + nm + '"><span>' + (pc === 0 ? 'C' + (Math.floor(m / 12) - 1) : '') + '</span>' + kq(m) + '</div>';
+      ws += '<div class="w' + h + '" data-m="' + m + '" role="button" tabindex="0" aria-label="' + nm + '"><span>' + (pc === 0 ? 'C' + (Math.floor(m / 12) - 1) : '') + '</span>' + kq(m) + '</div>';
       wi++;
-    } else if (wi > 0) bs += '<div class="b' + h + '" data-m="' + m + '" role="button" aria-label="' + nm + '" style="left:' + (wi * 100) / nw + '%">' + kq(m) + '</div>';
+    } else if (wi > 0) bs += '<div class="b' + h + '" data-m="' + m + '" role="button" tabindex="0" aria-label="' + nm + '" style="left:' + (wi * 100) / nw + '%">' + kq(m) + '</div>';
     m++;
   }
   // прокручиваемая клавиатура доступна и с клавиатуры компьютера (Tab → стрелки прокручивают)

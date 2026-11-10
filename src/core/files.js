@@ -9,7 +9,7 @@ const DB = 'practice-audio', STORE = 'tracks';
 // Нет места: имя ошибки по стандарту и старое имя Firefox (коды 22 / 1014)
 export const isQuota = (e) => !!e && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED' || e.code === 22 || e.code === 1014);
 
-export function createFiles({ indexedDB = globalThis.indexedDB, onWriteFail = () => {} } = {}) {
+export function createFiles({ indexedDB = globalThis.indexedDB, onWriteFail = () => {}, onError = () => {} } = {}) {
   let dbP = null;
   const all = [], subs = new Set();
   const emit = () => subs.forEach((fn) => fn());
@@ -47,7 +47,7 @@ export function createFiles({ indexedDB = globalThis.indexedDB, onWriteFail = ()
       all.push(rec);
       emit();
       try { await tx('readwrite', (st) => st.put(clean(rec))); return true; }
-      catch (e) { const full = isQuota(e); if (full) { rec.unsaved = true; onWriteFail(e, rec); } else files.noDb = true; return false; }
+      catch (e) { const full = isQuota(e); if (full) { rec.unsaved = true; onWriteFail(e, rec); } else { files.noDb = true; onError(e, rec); } return false; }
     },
     // Перечитать файл из базы: выбранный на Android файл (content://) часто нельзя читать с середины,
     // а сохранённая копия — обычный файл на диске; true — получилось
@@ -59,12 +59,14 @@ export function createFiles({ indexedDB = globalThis.indexedDB, onWriteFail = ()
       return false;
     },
     // Сохранить изменения записи (имя, привязки к песням, волна)
-    save(rec) { emit(); return tx('readwrite', (st) => st.put(clean(rec))).catch((e) => { if (isQuota(e)) onWriteFail(e, rec); }); },
+    // Ошибка не теряется: без неё разбор записи (тональность, темп, дорожки, текст) молча пропадал бы
+    save(rec) { emit(); return tx('readwrite', (st) => st.put(clean(rec))).catch((e) => { if (isQuota(e)) onWriteFail(e, rec); else onError(e, rec); }); },
     remove(id) {
       const i = all.findIndex((r) => r.id === id);
       if (i >= 0) all.splice(i, 1);
       emit();
-      return tx('readwrite', (st) => st.delete(id)).catch(() => {});
+      // Не удалось — файл может вернуться после перезапуска: об этом нужно знать, а не молчать
+      return tx('readwrite', (st) => st.delete(id)).catch((e) => { onError(e, { id }); });
     },
     subscribe(fn) { subs.add(fn); return () => subs.delete(fn); },
   };

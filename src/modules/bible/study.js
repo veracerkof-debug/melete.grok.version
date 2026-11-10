@@ -36,8 +36,8 @@ export function chapterHTML(ctx, P, cur, rows, x) {
   const head = (v) => (pf.subs ? [...(x.stories.get(v) || []), ...(x.subs.get(v) || [])].map((s) => '<div class="bsub">' + subheadingHTML(s) + '</div>').join('') : '');
   const marks = (v, pre) => {
     let m = '';
-    if (pf.comm && x.comm.some((c) => c.at === v && !!c.pre === pre)) m += '<sup class="bcm" data-cv="' + v + '" role="button" aria-label="' + ui.esc(ctx.t('st.comm')) + '">◆</sup>';
-    if (!pre && pf.xref && x.xref.has(v)) m += '<sup class="bxr" data-xv="' + v + '" role="button" aria-label="' + ui.esc(ctx.t('st.xref')) + '">↗</sup>';
+    if (pf.comm && x.comm.some((c) => c.at === v && !!c.pre === pre)) m += '<sup class="bcm" data-cv="' + v + '" role="button" tabindex="0" aria-label="' + ui.esc(ctx.t('st.comm')) + '">◆</sup>';
+    if (!pre && pf.xref && x.xref.has(v)) m += '<sup class="bxr" data-xv="' + v + '" role="button" tabindex="0" aria-label="' + ui.esc(ctx.t('st.xref')) + '">↗</sup>';
     return m;
   };
   return rows.map((r, i) => {

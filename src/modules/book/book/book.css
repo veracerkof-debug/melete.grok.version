@@ -273,7 +273,7 @@
 .tempi{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
 .dynt{font-family:"Melete Bravura","Bravura",serif;font-style:italic;font-size:18px}
 /* переключатели схем: подписи целиком, лишнее — на новую строку */
-.blab .seg button{flex:1 0 auto;min-width:auto;padding:0 9px;min-height:36px}
+.blab .seg button{flex:1 0 auto;min-width:auto;padding:0 9px;min-height:40px}
 .chipc.wide .dynt{margin-right:6px}
 /* часть 2: интервалы в ладу, трезвучия, верхние структуры, аккорд над басом, семьи гамм, гармонизация */
 .blab .pc.off{opacity:.45}

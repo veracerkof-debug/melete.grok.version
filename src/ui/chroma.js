@@ -44,7 +44,7 @@ export function chromaSVG(o) {
   // ноты
   for (let p = 0; p < 12; p++) {
     const on = set.has(p), r0 = p === root, [x, y] = P(R, p), sub = on && o.sub ? o.sub(p) : '';
-    s += '<g class="cr-n' + (on ? ' on' : '') + (r0 ? ' r' : '') + (o.mark && o.mark.has(p) ? ' c' : '') + '"' + (on || o.tap ? ' data-cpc="' + p + '" role="button"' : '') + ' aria-label="' + name(p) + '">' +
+    s += '<g class="cr-n' + (on ? ' on' : '') + (r0 ? ' r' : '') + (o.mark && o.mark.has(p) ? ' c' : '') + '"' + (on || o.tap ? ' data-cpc="' + p + '" role="button" tabindex="0"' : '') + ' aria-label="' + name(p) + '">' +
       '<circle cx="' + f(x) + '" cy="' + f(y) + '" r="' + (on ? (r0 ? 17 : 15) : 12) + '"/>' +
       '<text x="' + f(x) + '" y="' + f(sub ? y - 3.5 : y) + '" text-anchor="middle" dominant-baseline="central" class="cr-l">' + name(p) + '</text>' +
       (sub ? '<text x="' + f(x) + '" y="' + f(y + 8) + '" text-anchor="middle" dominant-baseline="central" class="cr-d">' + sub + '</text>' : '') + '</g>';

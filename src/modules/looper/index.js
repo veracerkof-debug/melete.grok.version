@@ -87,14 +87,14 @@ function view() {
     '<button class="lpshv num" data-nd="0" data-i="' + i + '" aria-label="' + ui.esc(t('shiftReset')) + '">' + (L.shift > 0 ? '+' : '') + L.shift + '</button>' + ui.icb('data-nd="' + NUDGE + '" data-i="' + i + '"', I.right, t('later1'), 'sm plain') + '</span>';
   if (reelsView()) {
     // «Катушки»: четыре кругляша с волной по кругу, крутятся при игре. Вести кругляш — сдвиг слоя, касание — окно слоя
-    const reels = '<div class="lpreels">' + Array.from({ length: REELS }, (_, i) => { const L = S.layers[i]; return '<div class="lpreelw"><div class="lpreel' + (L ? (L.mute ? ' muted' : '') : ' lpnone') + '" data-li="' + i + '"' + (L ? ' data-x="edit" data-i="' + i + '" data-drag="' + i + '" role="button" aria-label="' + ui.esc(t('layerDrag', { n: i + 1 })) + '"' : '') + '><canvas class="lpreelcv"></canvas><span class="lpreeln num">' + (i + 1) + '</span><span class="lpbadge num" hidden></span></div>' + (L ? nudge(L, i) : '') + '</div>'; }).join('') + '</div>' +
+    const reels = '<div class="lpreels">' + Array.from({ length: REELS }, (_, i) => { const L = S.layers[i]; return '<div class="lpreelw"><div class="lpreel' + (L ? (L.mute ? ' muted' : '') : ' lpnone') + '" data-li="' + i + '"' + (L ? ' data-x="edit" data-i="' + i + '" data-drag="' + i + '" role="button" tabindex="0" aria-label="' + ui.esc(t('layerDrag', { n: i + 1 })) + '"' : '') + '><canvas class="lpreelcv"></canvas><span class="lpreeln num">' + (i + 1) + '</span><span class="lpbadge num" hidden></span></div>' + (L ? nudge(L, i) : '') + '</div>'; }).join('') + '</div>' +
       (S.layers.length ? '' : '<div class="lphint l2">' + ui.esc(t(s === 'idle' ? 'hint' : 'hintMore')) + '</div>');
     return '<div class="lpwrap reels ' + size + '">' + reels + '<div class="lpmain row">' + main + time + slots + '</div>' + bar + '</div>';
   }
   if (partsView()) return partsHTML(S, main, time, slots, bar);
   if (tracksView()) {
     // «Дорожки»: четыре слоя волной слева направо во всё окно. Вести дорожку — сдвиг, касание — окно слоя, стрелки — по миллисекунде
-    const lanes = '<div class="lplanes big">' + Array.from({ length: REELS }, (_, i) => { const L = S.layers[i]; return '<div class="lplane' + (L ? (L.mute ? ' muted' : '') : ' lpnone') + '" data-li="' + i + '"><span class="lpnum num">' + (i + 1) + '</span><div class="lplanebox"><canvas class="lplanecv"' + (L ? ' data-x="edit" data-i="' + i + '" data-drag="' + i + '" role="button" aria-label="' + ui.esc(t('layerDrag', { n: i + 1 })) + '"' : '') + '></canvas><span class="lpbadge num" hidden></span></div>' + (L ? nudge(L, i, ' col') : '') + '</div>'; }).join('') +
+    const lanes = '<div class="lplanes big">' + Array.from({ length: REELS }, (_, i) => { const L = S.layers[i]; return '<div class="lplane' + (L ? (L.mute ? ' muted' : '') : ' lpnone') + '" data-li="' + i + '"><span class="lpnum num">' + (i + 1) + '</span><div class="lplanebox"><canvas class="lplanecv"' + (L ? ' data-x="edit" data-i="' + i + '" data-drag="' + i + '" role="button" tabindex="0" aria-label="' + ui.esc(t('layerDrag', { n: i + 1 })) + '"' : '') + '></canvas><span class="lpbadge num" hidden></span></div>' + (L ? nudge(L, i, ' col') : '') + '</div>'; }).join('') +
       (S.layers.length ? '' : '<div class="lphint l2">' + ui.esc(t(s === 'idle' ? 'hint' : 'hintMore')) + '</div>') + '</div>';
     return '<div class="lpwrap tracks ' + size + '">' + lanes + '<div class="lpmain row">' + main + time + slots + '</div>' + bar + '</div>';
   }
@@ -107,7 +107,7 @@ function view() {
 function partsHTML(S, main, time, slots, bar) {
   const { t, ui } = ctx, P = parts, p = P.proj(), m = metro().cfg;
   const tempo = (p && p.spb ? Math.round(600 / p.spb) / 10 : m.bpm) + ' · ' + m.num + '/' + m.den;
-  const row = (cls, attrs, ic, name, cv, vol) => '<div class="lprow' + cls + '" ' + attrs + ' role="button"><span class="lpric">' + ic + '</span><span class="lprn"><b>' + ui.esc(name) + '</b></span>' + cv + vol + '</div>';
+  const row = (cls, attrs, ic, name, cv, vol) => '<div class="lprow' + cls + '" ' + attrs + ' role="button" tabindex="0"><span class="lpric">' + ic + '</span><span class="lprn"><b>' + ui.esc(name) + '</b></span>' + cv + vol + '</div>';
   const rows = [];
   (p ? p.tracks : []).forEach((tr) => rows.push(row((tr.mute ? ' off' : '') + (P.pending(tr.id) ? ' pend' : ''), 'data-tr="' + tr.id + '" style="--c:' + tr.color + '" aria-pressed="' + !tr.mute + '" aria-label="' + ui.esc(t('rowTap', { name: P.name(tr) })) + '"',
     I[tr.kind] || I.notes, P.name(tr), '<canvas class="lprowcv" data-pv="t" data-id="' + tr.id + '"></canvas>',

@@ -190,7 +190,7 @@ button:focus-visible, input:focus-visible { outline: 1px solid var(--ink); outli
 .l-d-link { margin-left: auto; align-self: center; font-size: 13px; color: var(--l2); padding: 8px 0; }
 .l-search {
   width: 100%; border: 0; border-bottom: 1px solid var(--sep); background: transparent; color: var(--ink);
-  font: inherit; font-size: 18px; padding: 10px 0; border-radius: 0; outline: none;
+  font: inherit; font-size: 18px; padding: 10px 0; border-radius: 0;
 }
 .l-search::placeholder { color: var(--l3); }
 .l-search:focus { border-bottom-color: var(--ink); }
@@ -255,7 +255,7 @@ button:focus-visible, input:focus-visible { outline: 1px solid var(--ink); outli
 .l-hint { font-size: 13px; color: var(--l2); line-height: 1.5; margin: 6px 0 12px; }
 
 .l-seg { display: flex; border: var(--l-bd); border-radius: var(--l-r); padding: 3px; gap: 2px; margin: 8px 0; }
-.l-seg button { flex: 1; min-height: 36px; padding: 0 6px; border-radius: var(--l-r); font-size: 13px; white-space: nowrap; transition: background 0.2s, color 0.2s; }
+.l-seg button { flex: 1; min-height: 40px; padding: 0 6px; border-radius: var(--l-r); font-size: 13px; white-space: nowrap; transition: background 0.2s, color 0.2s; }
 .l-seg button.on { background: var(--l-sel-bg); color: var(--l-sel-fg); }
 
 .l-row { display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left; padding: 12px 0; gap: 16px; }
@@ -268,7 +268,7 @@ button:focus-visible, input:focus-visible { outline: 1px solid var(--ink); outli
 
 .l-field { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
 .l-field span { font-size: 13px; color: var(--l2); }
-.l-field input { font: inherit; font-size: 17px; color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--sep); padding: 8px 0; border-radius: 0; outline: none; }
+.l-field input { font: inherit; font-size: 17px; color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--sep); padding: 8px 0; border-radius: 0; }
 .l-field input:focus { border-bottom-color: var(--ink); }
 
 .l-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 18px; border-radius: var(--l-r); border: var(--l-bd); font-size: 14px; margin: 8px 0; }
@@ -1024,7 +1024,7 @@ body { transition: background-color .35s var(--ease), color .35s var(--ease); }
 .l-find-k { color: var(--l2) !important; }
 .l-set-find { margin: 0 0 6px; }
 .l-sheet-body > .l-sec > .l-kicker { font-size: 11px; color: var(--l2); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .08em; }
-.l-search:focus-visible { outline: none; }
+
 
 /* ═════════ Пропорции стилей и крест в устройстве стиля (DECISIONS 2026-11-02) ═════════ */
 /* крест посередине в стилях: ровный размер (не по остатку места) — не меньше 90 и не больше 160 px */

@@ -66,7 +66,7 @@
 .lplanebox .lpbadge{bottom:auto;top:50%;transform:translate(-50%,-50%)}
 .lpnudge{display:flex;align-items:center;justify-content:center;gap:0;flex:none}
 .lpnudge.col{flex-direction:column;gap:0}
-.lpnudge.col .ic.sm{width:36px;height:30px}
+.lpnudge.col .ic.sm{width:40px;height:30px}
 .lpshv{min-width:44px;height:30px;font-size:12px;font-weight:600;color:var(--l2);border-radius:8px;padding:0 4px}
 .lpnudge.col .lpshv{min-width:40px;height:22px}
 .lpmain.row{flex:none;flex-direction:row;justify-content:center;gap:12px}

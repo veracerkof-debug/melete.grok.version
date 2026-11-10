@@ -36,6 +36,11 @@ jobs:
       - name: Тесты (dev и pre)
         run: MELETE_CHANNEL=dev npm test && MELETE_CHANNEL=pre npm test
 
+      # Проверки по исходникам: ключи переводов и доступность (build/check-i18n.mjs, build/check-a11y.mjs).
+      # Ловят то, чего не видно в тестах: сырой ключ в интерфейсе, кнопку без подписи, цель касания меньше 40 px.
+      - name: Проверки (переводы и доступность)
+        run: npm run check
+
       - name: Браузер
         run: npx playwright install --with-deps chromium
 

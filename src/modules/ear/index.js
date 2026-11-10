@@ -410,8 +410,8 @@ function ekbHTML(m0, nw, marks) {
   let ws = '', bs = '', wi = 0, m = m0;
   while (wi < nw) {
     const pc = m % 12, mk = marks && marks[pc] ? ' ' + marks[pc] : '';
-    if (MAJI.includes(pc)) { ws += '<div class="w' + mk + '" data-m="' + m + '" role="button" aria-label="' + SH[pc] + '"><span>' + SH[pc] + '</span></div>'; wi++; }
-    else if (wi > 0) bs += '<div class="b' + mk + '" data-m="' + m + '" role="button" aria-label="' + SH[pc] + '" style="left:' + (wi * 100) / nw + '%"></div>';
+    if (MAJI.includes(pc)) { ws += '<div class="w' + mk + '" data-m="' + m + '" role="button" tabindex="0" aria-label="' + SH[pc] + '"><span>' + SH[pc] + '</span></div>'; wi++; }
+    else if (wi > 0) bs += '<div class="b' + mk + '" data-m="' + m + '" role="button" tabindex="0" aria-label="' + SH[pc] + '" style="left:' + (wi * 100) / nw + '%"></div>';
     m++;
   }
   return '<div class="kbwrap ekb"><div class="kb" style="--n:' + nw + '">' + ws + bs + '</div></div>';
@@ -424,10 +424,10 @@ function ntKB(mk) {
   for (let m = 60; wi < 7; m++) {
     const pc = m % 12, cls = (mk && mk[pc] ? ' ' + mk[pc] : '') + (set.has(pc) ? '' : ' off'), col = e.ntColors ? ' style="--nc:' + NT_COLORS[pc] + '"' : '';
     if (MAJI.includes(pc)) {
-      ws += '<div class="w' + cls + (e.ntColors ? ' col' : '') + '" data-m="' + m + '"' + col + ' role="button" aria-label="' + SH[pc] + '"><span>' + SH[pc] + '</span></div>';
+      ws += '<div class="w' + cls + (e.ntColors ? ' col' : '') + '" data-m="' + m + '"' + col + ' role="button" tabindex="0" aria-label="' + SH[pc] + '"><span>' + SH[pc] + '</span></div>';
       wi++;
     } else {
-      bs += '<div class="b' + cls + (e.ntColors ? ' col' : '') + '" data-m="' + m + '" role="button" aria-label="' + SH[pc] + '" style="left:' + (wi * 100) / 7 + '%' +
+      bs += '<div class="b' + cls + (e.ntColors ? ' col' : '') + '" data-m="' + m + '" role="button" tabindex="0" aria-label="' + SH[pc] + '" style="left:' + (wi * 100) / 7 + '%' +
         (e.ntColors ? ';--nc:' + NT_COLORS[pc] : '') + '"></div>';
     }
   }

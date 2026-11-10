@@ -47,11 +47,11 @@
 .medlib .mlhead .ic{flex:none}
 .mlsearch{flex:1;display:flex;align-items:center;gap:6px;background:var(--fill);border-radius:10px;padding:0 10px;height:38px}
 .mlsearch svg{width:16px;height:16px;stroke:var(--l2);fill:none;stroke-width:2.2;flex:none}
-.mlsearch input{flex:1;border:0;background:none;outline:none;font-size:16px;min-width:0;color:var(--ink)}
+.mlsearch input{flex:1;border:0;background:none;font-size:16px;min-width:0;color:var(--ink)}
 .mlbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;min-width:0}
 .mlbar .sortsel{min-width:0;max-width:44%;text-overflow:ellipsis} /* узкий телефон: селект не шире окна */
 .mlfil{flex:none;display:flex;gap:2px;background:var(--fill);border-radius:9px;padding:2px}
-.mlfil button{min-height:30px;padding:0 10px;border-radius:7px;font-size:13px;font-weight:600;color:var(--l2)}
+.mlfil button{min-height:40px;padding:0 10px;border-radius:7px;font-size:13px;font-weight:600;color:var(--l2)}
 .mlfil button.on{background:var(--cell);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .mlist{display:flex;flex-direction:column}
 .mlrow{display:flex;align-items:center;gap:4px;border-radius:12px;padding:0 2px}

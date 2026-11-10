@@ -70,7 +70,7 @@ function fretHTML(pcs, root, frets) {
     for (let f = 0; f <= F; f++) {
       const pc = (m + f) % 12;
       if (!pcs.has(pc)) continue;
-      s += '<g class="fn' + (pc === root ? ' r' : '') + '" data-x="fplay" data-m="' + (m + f) + '" role="button" aria-label="' + SH[pc] + '"><circle cx="' + x(f) + '" cy="' + y(i) +
+      s += '<g class="fn' + (pc === root ? ' r' : '') + '" data-x="fplay" data-m="' + (m + f) + '" role="button" tabindex="0" aria-label="' + SH[pc] + '"><circle cx="' + x(f) + '" cy="' + y(i) +
         '" r="9"/><text x="' + x(f) + '" y="' + (y(i) + 3.4) + '" text-anchor="middle">' + SH[pc].replace('♯', '#') + '</text></g>';
     }
   });

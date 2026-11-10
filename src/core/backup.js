@@ -27,6 +27,11 @@ export function songFiles(app) {
 }
 export const filesSize = (list) => list.reduce((a, r) => a + (r.blob ? r.blob.size : r.size || 0), 0);
 
+// Потолок на файлы в копии. Файлы кодируются в base64 (×1,33) и потом ещё раз копируются при сборке JSON —
+// на телефоне это вчетверо больше исходного объёма, и такой размер просто выкашивает процесс.
+// Поэтому файлы сверх потолка не входят, а в копии остаётся пометка, сколько не попало (bk.filesSkipped).
+export const FILES_LIMIT = 24 * 1024 * 1024;
+
 async function toB64(blob) {
   const u = new Uint8Array(await blob.arrayBuffer());
   let s = '';
@@ -36,15 +41,25 @@ async function toB64(blob) {
 const fromB64 = (b) => { const s = atob(b), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; };
 
 // Текст копии из выбранных частей; files — с файлами песен
-export async function backupData(app, parts = PARTS, { files = false } = {}) {
+export async function backupData(app, parts = PARTS, { files = false, info = null } = {}) {
   await loadAllLangs(); // демо-файлы на любом языке — мимо копии
   const p = pickParts(stripDemo(app.store.state), parts, { tools: parts.includes('settings') ? readTools() : null }); // без демо
   if (files && parts.includes('songs')) {
     p.files = [];
-    for (const r of songFiles(app).filter((x) => !isDemoFile(x, CORE_DICTS))) {
+    const list = songFiles(app).filter((x) => !isDemoFile(x, CORE_DICTS));
+    let total = 0, skipped = 0;
+    for (const r of list) {
+      const size = r.blob ? r.blob.size : (r.size || 0);
+      if (total + size > FILES_LIMIT) { skipped++; continue; }
       const meta = { ...r };
       delete meta.blob; delete meta._busy;
       p.files.push({ ...meta, data: await toB64(r.blob) });
+      total += size;
+    }
+    if (skipped) {
+      p.filesSkipped = skipped;
+      if (info) info.skipped = skipped;
+      log('backup', 'файлы сверх ' + Math.round(FILES_LIMIT / 1048576) + ' МБ не попали в копию: ' + skipped, 'w');
     }
   }
   return JSON.stringify({ backupInfo: backupInfo(app), ...p }, null, 1);
@@ -74,13 +89,14 @@ export async function restoreParts(app, p, parts) {
 // Сохранить копию. opts: { parts, files } — по частям; без них — всё (как раньше).
 // → { where: 'folder' | 'shared' | 'saved' | 'cancel', name }
 export async function saveBackup(app, opts = null) {
-  const text = opts ? await backupData(app, opts.parts, opts) : backupText(app);
+  const info = {};
+  const text = opts ? await backupData(app, opts.parts, { ...opts, info }) : backupText(app);
   const F = app.folder;
   if (F && F.state && F.state.ok && F.saveBackup) {
     const name = await F.saveBackup(text);
-    if (name) return { where: 'folder', name };
+    if (name) return { where: 'folder', name, skipped: info.skipped || 0 };
   }
   const { backupName } = await import('./folder.js'), { sendFile } = await import('./screens/share.js');
   const name = backupName(backupBy(app)), where = await sendFile(new TextEncoder().encode(text), name, name, 'application/json');
-  return { where, name };
+  return { where, name, skipped: info.skipped || 0 };
 }

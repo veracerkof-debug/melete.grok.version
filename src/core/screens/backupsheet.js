@@ -3,10 +3,10 @@
 import { t, tn, getLang } from '../../i18n/index.js';
 import { esc, sw, sheet, snav, toast } from '../../ui/index.js';
 import { PARTS, partCounts, partsOf } from '../backupparts.js';
-import { saveBackup, restoreParts, songFiles, filesSize, infoOf } from '../backup.js';
+import { saveBackup, restoreParts, songFiles, filesSize, infoOf, FILES_LIMIT } from '../backup.js';
 
 const MB = (n) => (n / 1048576 < 10 ? (n / 1048576).toFixed(1) : Math.round(n / 1048576)).toString().replace('.', getLang() === 'en' ? '.' : ',');
-const BIG = 60 * 1048576; // больше — файлы по умолчанию не берём: копия долго пишется и тяжела для почты
+const BIG = FILES_LIMIT; // больше — файлы не берём: в копии они вчетверо тяжелее, телефон такой объём не переваривает
 
 function rows(list, sel, sub) {
   return '<div class="group">' + list.map((k) => '<label class="cell"><span class="grow">' + esc(t('bkp.' + k)) + '<span class="bksub">' + esc(sub(k)) + '</span></span>' +
@@ -24,13 +24,14 @@ export function exportSheet(app, done = () => {}) {
     k === 'calendar' ? tn('bkp.calendarN', n.calendar) : t('bkp.settingsSub'));
   const body = () => snav(t('bkp.saveTitle')) + rows(list, sel, sub) +
     (files.length && sel.has('songs') ? '<div class="group"><label class="cell"><span class="grow">' + esc(t('bkp.files')) + '<span class="bksub">' + esc(tn('bkp.filesN', files.length) + ' · ' + MB(size) + ' ' + t('bkp.mb')) + '</span></span>' +
-      sw('bkpfiles', withFiles, t('bkp.files')) + '</label></div>' + (withFiles && size > BIG ? '<p class="ftr">' + esc(t('bkp.big')) + '</p>' : '') : '') +
+      (size > BIG ? '' : sw('bkpfiles', withFiles, t('bkp.files'))) + '</label></div>' +
+      (size > BIG ? '<p class="ftr">' + esc(t('bkp.tooBig', { mb: MB(BIG) })) + '</p>' : (withFiles && size > 10 * 1048576 ? '<p class="ftr">' + esc(t('bkp.big')) + '</p>' : '')) : '') +
     '<div class="group" style="margin-top:16px"><button class="cell center b" data-bksave' + (sel.size ? '' : ' disabled') + '>' + esc(t(busy ? 'bkp.saving' : 'bkp.save')) + '</button></div>';
   sheet(body, (el, sh) => {
     el.addEventListener('change', (e) => {
       const k = e.target.dataset.sw;
       if (!k) return;
-      if (k === 'bkpfiles') withFiles = e.target.checked;
+      if (k === 'bkpfiles') withFiles = e.target.checked && size <= BIG;
       else if (k.startsWith('bkp:')) { const p = k.slice(4); if (e.target.checked) sel.add(p); else sel.delete(p); }
       sh.update();
     });

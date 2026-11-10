@@ -108,14 +108,14 @@ function circleSVG() {
       const fs = ({ maj: 9, min: 7, dim: 5.6 })[ring] * (1 + big * ({ maj: 0.75, min: 0.7, dim: 0.75 })[ring]);
       // название и ступень — столбиком по вертикали экрана (по радиусу у боковых секторов встали бы рядом)
       const [cx, cy] = pt((r1 + r0) / 2, a), ny = deg ? cy - fs * 0.22 : cy, dy = cy + fs * 0.62;
-      out += '<g class="dseg ' + ring + (deg ? ' dia' : '') + (act ? ' on' : '') + '" data-ring="' + ring + '" data-i="' + i + '" role="button" aria-label="' + names[i] + '">' +
+      out += '<g class="dseg ' + ring + (deg ? ' dia' : '') + (act ? ' on' : '') + '" data-ring="' + ring + '" data-i="' + i + '" role="button" tabindex="0" aria-label="' + names[i] + '">' +
         '<path d="' + seg(r1, r0, a - h, a + h) + '"/><text x="' + cx + '" y="' + ny.toFixed(2) + '" font-size="' + fs.toFixed(1) + '">' + names[i] + '</text>' +
         (deg ? '<text class="deg" x="' + cx + '" y="' + dy.toFixed(2) + '" font-size="' + (fs * 0.48).toFixed(1) + '">' + deg + '</text>' : '') + '</g>';
     }
   });
   const label = on ? SH[d.pc] + (CSUF[cur] || '') : C_MAJ[k];
   return '<div class="dcirc" role="group" aria-label="' + t('circle') + '"><svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">' + out +
-    '<g class="dctr' + (on ? ' on' : '') + '" data-x="dctr" role="button" aria-label="' + (on ? t('stop') : t('circle.key', { k: C_MAJ[k] })) + '"><circle r="24"/><text y="1">' + label + '</text></g></svg></div>';
+    '<g class="dctr' + (on ? ' on' : '') + '" data-x="dctr" role="button" tabindex="0" aria-label="' + (on ? t('stop') : t('circle.key', { k: C_MAJ[k] })) + '"><circle r="24"/><text y="1">' + label + '</text></g></svg></div>';
 }
 // Аккорд круга: касание — звучит (плавный переход с прошлого), звучащий — стоп
 function playRing(ring, i) {

@@ -162,7 +162,7 @@ export function createArrange(app, { root, bar, main, render, cardMenu }) {
   return {
     on, set,
     // значок на вкладке и карточке в режиме правки
-    tabBadge: (id) => (on() && enabled() && !FIXED_TABS.includes(id) ? '<i class="arrb out" data-arr="out:' + id + '" role="button" aria-label="' + esc(t('tabs.toTools')) + '">−</i>' : ''),
+    tabBadge: (id) => (on() && enabled() && !FIXED_TABS.includes(id) ? '<i class="arrb out" data-arr="out:' + id + '" role="button" tabindex="0" aria-label="' + esc(t('tabs.toTools')) + '">−</i>' : ''),
     barHTML: () => '<div class="arrbar" role="toolbar"><span>' + esc(t('arr.hint')) + '</span><button class="btn sm fill" data-arr="done">' + esc(t('hb.done')) + '</button></div>',
   };
 }

@@ -59,7 +59,7 @@
 .glfxc{padding-top:0!important}
 .glamt{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:14px}
 .glamt span{color:var(--l2);min-width:5em}
-.glamt input{flex:1;accent-color:var(--tint);min-height:32px}
+.glamt input{flex:1;accent-color:var(--tint);min-height:40px}
 .glamt b{min-width:3.2em;text-align:right;font-weight:600}
 .glpad.plain{background:color-mix(in srgb,var(--tint) 9%,var(--cell))}
 
