@@ -144,7 +144,7 @@ function drawBeats() {
     }
     for (let i = 0; i < n; i++) {
       const a0 = -90 + i * seg + gap / 2, a1 = -90 + (i + 1) * seg - gap / 2 - (n === 1 ? 0.01 : 0), l = c.accents[i];
-      s += '<path class="wseg l' + l + '" data-beat="' + i + '" data-l="' + l + '" d="' + arcD(100, 100, 64, a0, a1) + '" role="button" tabindex="0" aria-label="' +
+      s += '<path class="wseg l' + l + '" data-beat="' + i + '" data-l="' + l + '" d="' + arcD(100, 100, 64, a0, a1) + '" role="button" aria-label="' +
         t('beatLevel', { n: i + 1, level: t('level.' + l) }) + '"/>';
       if (l >= 2) {
         const am = (((a0 + a1) / 2) * Math.PI) / 180;

@@ -46,6 +46,9 @@ const walk = (dir, out = []) => {
 const allowed = (sel, list) => list.some(([name]) => sel.includes(name));
 
 // --- 1. role="button" без tabindex ---
+// Осознанно без tabindex: сегменты колеса метронома — внутри ползунка (#mwsl, role="slider");
+// с клавиатуры колесо и так доступно, а вложенные интерактивные элементы запрещены (WCAG).
+const KB_OK = [['src/modules/metro/index.js', 'class="wseg']];
 for (const file of walk(join(ROOT, 'src'))) {
   if (!file.endsWith('.js')) continue;
   const rel = relative(ROOT, file);
@@ -54,6 +57,8 @@ for (const file of walk(join(ROOT, 'src'))) {
   lines.forEach((line, i) => {
     if (!line.includes('role="button"')) return;
     if (line.includes('tabindex')) return;
+    if (KB_OK.some(([f, frag]) => rel.endsWith(f) && line.includes(frag))) return;
+    if (line.includes('closest(') || line.includes('querySelector')) return; // это селектор в коде, а не элемент
     note('клавиатура', rel + ':' + (i + 1), 'role="button" без tabindex — с клавиатуры не достичь');
   });
 }
