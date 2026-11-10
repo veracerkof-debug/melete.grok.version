@@ -164,11 +164,11 @@ export function boot(root) {
     else if (counts && active.awaySince) { audio.metro.flush(); awayEnd(active); saveActive(active); }
   };
   document.addEventListener('visibilitychange', () => awayCheck());
-  // Клавиатура: элементы с role="button" tabindex="0" (значки, плитки, крестики) — без этого они недостижимы с клавиатуры:
+  // Клавиатура: элементы с ролью кнопки (значки, плитки, крестики) — без этого они недостижимы с клавиатуры:
   // ни Tab, ни Enter. Enter и пробел нажимают их, как настоящая кнопка.
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
-    const el = e.target && e.target.closest ? e.target.closest('[role="button" tabindex="0"]') : null;
+    const el = e.target && e.target.closest ? e.target.closest('[role="button"]') : null;
     if (!el || el.tagName === 'BUTTON' || el.tagName === 'A') return;
     e.preventDefault();
     try { el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })); } catch { /* ignore */ }
